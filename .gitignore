@@ -1,23 +1,42 @@
-# Compiled class file
-*.class
+import java.util.Scanner;
+class Miserman2{
 
-# Log file
-*.log
+		private static int minimum_amt(int mat[][], int n, int m){
 
-# BlueJ files
-*.ctxt
+			int dp[][] = new int[2][m+1];
+			for(int i = 1; i <= m; i++)
+				dp[0][i] = mat[n][i];
+			int flag = 1;
+			for(int i = n-1; i >= 1; i--){
+				for(int j = m; j >= 1; j--){
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+					dp[flag][j] = mat[i][j] + dp[flag ^ 1][j];
+					if(j - 1 > 0)
+						dp[flag][j] = Math.min(dp[flag][j], mat[i][j] + dp[flag ^ 1][j-1]);
+					if(j != m)
+						dp[flag][j] = Math.min(dp[flag][j], mat[i][j] + dp[flag ^ 1][j+1]);
+				}
+				flag ^=1;
+			}
+			flag ^= 1;
+			int min = Integer.MAX_VALUE;
+			for(int i = 1; i <= m; i++){
+				if(min > dp[flag][i])
+					min = dp[flag][i];
+			}
+			return min;
+		}
+	public static void main(String []a){
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+		Scanner input = new Scanner(System.in);
+		int n = input.nextInt();
+		int m = input.nextInt();
+		int mat[][] = new int[n+1][m+1];
+		for(int i = 1; i <= n; i++){
+			for(int j = 1; j <= m; j++)
+				mat[i][j] = input.nextInt();
+		}
+		int ans = minimum_amt(mat, n, m);
+		System.out.println(ans);
+	}
+}
